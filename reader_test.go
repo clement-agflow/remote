@@ -47,10 +47,9 @@ func TestReader_JSON(t *testing.T) {
 			panic("fail to write back")
 		}
 	})
-	go func() {
+	go func(t *testing.T) {
 		t.Fatal(http.ListenAndServe(":8080", nil))
-	}()
-
+	}(t)
 
 	url := "http://localhost:8080/json"
 	type testData struct {Content int `json:"content"`}
