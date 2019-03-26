@@ -1,6 +1,7 @@
 package remote
 
 import (
+	"log"
 	"net/http"
 	"testing"
 	"time"
@@ -38,17 +39,17 @@ func TestReader_JSON(t *testing.T) {
 	http.HandleFunc("/json/valid", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("{\"content\": 1}"))
 		if err != nil {
-			panic("fail to write back")
+			log.Fatal("fail to write back")
 		}
 	})
 	http.HandleFunc("/json/invalid", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("boom"))
 		if err != nil {
-			panic("fail to write back")
+			log.Fatal("fail to write back")
 		}
 	})
 	go func(t *testing.T) {
-		t.Fatal(http.ListenAndServe(":8080", nil))
+		log.Fatal(http.ListenAndServe(":8080", nil))
 	}(t)
 
 	url := "http://localhost:8080/json"
