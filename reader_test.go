@@ -16,16 +16,14 @@ func TestNewReader(t *testing.T) {
 }
 
 func TestReader_Read(t *testing.T) {
-	opt := func(r *Reader) {}
-	_, err := NewReader(opt).Read("https://google.com")
+	_, err := NewReader().Read("https://google.com")
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestReader_Bytes(t *testing.T) {
-	opt := func(r *Reader) {}
-	content, err := NewReader(opt).Bytes("https://google.com")
+	content, err := NewReader().Bytes("https://google.com")
 	if err != nil {
 		t.Error(err)
 	}
@@ -52,6 +50,7 @@ func TestReader_JSON(t *testing.T) {
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	}(t)
 
+	// try to read valid and invalid json
 	url := "http://localhost:8080/json"
 	type testData struct {Content int `json:"content"`}
 	result := &testData{}
