@@ -4,15 +4,37 @@ import (
 	"log"
 	"net/http"
 	"testing"
-	"time"
 )
 
-func TestNewReader(t *testing.T) {
-	NewReader(
-		Retry(3),
-		Timeout(time.Second),
-		SkipTLSVerify(),
-		UserAgent("test"))
+func TestRetry(t *testing.T) {
+	r := NewReader(Retry(3))
+	if r.retry != 3 {
+		t.Error("fail to set reader's retry")
+	}
+}
+
+func TestSkipTLSVerify(t *testing.T) {
+	r := NewReader(SkipTLSVerify())
+	if !r.skipTLSVerify {
+		t.Error("fail to set skipTLSVerify to true")
+	}
+}
+
+func TestTimeout(t *testing.T) {
+	r := NewReader(Timeout(3))
+	if r.timeout != 3 {
+		t.Error("fail to set reader's timeout")
+	}
+}
+
+func TestUserAgent(t *testing.T) {
+	newAgent:= "Mozilla/5.0 (Windows NT 6.1; Win64; x64) " +
+		"AppleWebKit/537.36 (KHTML, like Gecko) " +
+		"Chrome/63.0.3239.132 Safari/537.36"
+	r := NewReader(UserAgent(newAgent))
+	if r.userAgent != newAgent {
+		t.Error("fail to set user agent")
+	}
 }
 
 func TestReader_Read(t *testing.T) {
@@ -46,17 +68,17 @@ func TestReader_JSON(t *testing.T) {
 			log.Fatal("fail to write back")
 		}
 	})
-	go func(t *testing.T) {
+	go func() {
 		log.Fatal(http.ListenAndServe(":8080", nil))
-	}(t)
+	}()
 
 	// try to read valid and invalid json
 	url := "http://localhost:8080/json"
 	type testData struct {Content int `json:"content"`}
-	result := &testData{}
 	if err := NewReader().JSON(url + "/invalid",  &testData{}); err == nil {
 		t.Error("read invalid json response")
 	}
+	result := &testData{}
 	if err := NewReader().JSON(url + "/valid", result); err != nil {
 		t.Error("fail to read json response")
 	}
