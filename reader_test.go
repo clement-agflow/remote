@@ -9,21 +9,21 @@ import (
 func TestRetry(t *testing.T) {
 	r := NewReader(Retry(3))
 	if r.retry != 3 {
-		t.Error("fail to set reader's retry")
+		t.Error("failed to set reader's retry")
 	}
 }
 
 func TestSkipTLSVerify(t *testing.T) {
 	r := NewReader(SkipTLSVerify())
 	if !r.skipTLSVerify {
-		t.Error("fail to set skipTLSVerify to true")
+		t.Error("failed to set reader's skipTLSVerify to true")
 	}
 }
 
 func TestTimeout(t *testing.T) {
 	r := NewReader(Timeout(3))
 	if r.timeout != 3 {
-		t.Error("fail to set reader's timeout")
+		t.Error("failed to set reader's timeout")
 	}
 }
 
@@ -33,7 +33,7 @@ func TestUserAgent(t *testing.T) {
 		"Chrome/63.0.3239.132 Safari/537.36"
 	r := NewReader(UserAgent(newAgent))
 	if r.userAgent != newAgent {
-		t.Error("fail to set user agent")
+		t.Error("failed to set user agent")
 	}
 }
 
@@ -59,13 +59,13 @@ func TestReader_JSON(t *testing.T) {
 	http.HandleFunc("/json/valid", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("{\"content\": 1}"))
 		if err != nil {
-			log.Fatal("fail to write back")
+			log.Fatal("failed to write back")
 		}
 	})
 	http.HandleFunc("/json/invalid", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("boom"))
 		if err != nil {
-			log.Fatal("fail to write back")
+			log.Fatal("failed to write back")
 		}
 	})
 	go func() {
@@ -76,11 +76,11 @@ func TestReader_JSON(t *testing.T) {
 	url := "http://localhost:8080/json"
 	type testData struct {Content int `json:"content"`}
 	if err := NewReader().JSON(url + "/invalid",  &testData{}); err == nil {
-		t.Error("read invalid json response")
+		t.Error("failed to read invalid json response")
 	}
 	result := &testData{}
 	if err := NewReader().JSON(url + "/valid", result); err != nil {
-		t.Error("fail to read json response")
+		t.Error("failed to read json response")
 	}
 	if result.Content != 1 {
 		t.Error("invalid result Json", result.Content)
