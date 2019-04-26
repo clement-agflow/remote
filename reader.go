@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/corpix/uarand"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +31,7 @@ func NewReader(options ...Option) *Reader {
 	r := &Reader{
 		retry:     1,
 		timeout:   5 * time.Second,
-		userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36", // nolint: lll
+		userAgent: uarand.GetRandom(),
 	}
 	for _, option := range options {
 		option(r)
