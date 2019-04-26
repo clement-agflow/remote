@@ -27,7 +27,17 @@ func TestTimeout(t *testing.T) {
 	}
 }
 
-func TestUserAgent(t *testing.T) {
+func TestRandomUserAgent(t *testing.T) {
+	r1 := NewReader()
+	for i:= 0; i < 100 ; i++ {
+		if r1.userAgent != NewReader().userAgent {
+			return
+		}
+	}
+	t.Error("useragent not random by default")
+}
+
+func TestCustomUserAgent(t *testing.T) {
 	newAgent:= "Mozilla/5.0 (Windows NT 6.1; Win64; x64) " +
 		"AppleWebKit/537.36 (KHTML, like Gecko) " +
 		"Chrome/63.0.3239.132 Safari/537.36"
